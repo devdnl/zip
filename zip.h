@@ -50,12 +50,16 @@ extern "C" {
 /*
  * Enable(1)/Disable(0) compression in zip archive by using ZLIB library.
  */
+#ifndef ZIP_ENABLE_COMPRESSION
 #define ZIP_ENABLE_COMPRESSION          0
+#endif
 
 /*
  * File copy buffer size.
  */
-#define ZIP_FILE_BUFFER_SIZE            2048
+#ifndef ZIP_FILE_BUFFER_SIZE
+#define ZIP_FILE_BUFFER_SIZE            32768
+#endif
 
 /*==============================================================================
   Exported object types
