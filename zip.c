@@ -313,7 +313,7 @@ int zip__entry_open(zip_t *zip, const char *name, zip_compression_t compression)
         }
 
         if (!zip->local_file_header) {
-                zip->local_file_header = calloc(1, sizeof(zip->local_file_header));
+                zip->local_file_header = calloc(1, sizeof(*zip->local_file_header));
                 if (!zip->local_file_header) {
                         return ENOMEM;
                 }
@@ -383,7 +383,7 @@ size_t zip__entry_write_buf(zip_t *zip, const void *buf, size_t buflen)
         if (zip->local_file_header->compression == compression_method_store) {
                 n = fwrite(buf, 1, buflen, zip->file);
                 if (n) {
-                        zip->local_file_header->CRC32 = crc32(buf, buflen, ~zip->local_file_header->CRC32);// crc32_update(buf, buflen, ~zip->local_file_header->CRC32);
+                        zip->local_file_header->CRC32 = crc32(buf, buflen, ~zip->local_file_header->CRC32);
                         zip->local_file_header->compressed_size += n;
                         zip->local_file_header->uncompressed_size += n;
                 }
@@ -553,7 +553,9 @@ static int write_central_directory(zip_t *zip)
 
                 entries++;
 
-                node = node->next;
+                struct node *next = node->next;
+                free(node);
+                node = next;
         }
 
         if (!err) {
